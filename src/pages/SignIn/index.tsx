@@ -26,6 +26,7 @@ import {
 } from "./style";
 import styled from "styled-components";
 import { AuthGoogleContext } from "../../contexts/GoogleAuth";
+import { AuthGithubContext } from "../../contexts/GitHubAuth";
 
 // 👇 Infer the Schema to get the TS Type
 type ILogin = TypeOf<typeof loginSchema>;
@@ -35,12 +36,16 @@ const LoginPage: FC = () => {
 
   const navigate = useNavigate();
 
-  const { signInGoogle, signed } = useContext(AuthGoogleContext);
+  const { signInGoogle, signedGoogle } = useContext(AuthGoogleContext);
+  const { signInGithub, signedGithub } = useContext(AuthGithubContext);
 
   async function loginGoogle() {
     await signInGoogle();
   }
-  if (signed) {
+  async function loginGithub() {
+    await signInGithub();
+  }
+  if (signedGithub || signedGoogle) {
     navigate("/home");
   }
 
@@ -144,7 +149,7 @@ const LoginPage: FC = () => {
                       <GoogleLogo style={{ height: "2rem" }} />
                       Google
                     </OauthMuiLink>
-                    <OauthMuiLink href="">
+                    <OauthMuiLink onClick={() => loginGithub()}>
                       <GitHubLogo style={{ height: "2rem" }} />
                       GitHub
                     </OauthMuiLink>

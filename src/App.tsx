@@ -1,14 +1,17 @@
-import { CssBaseline } from '@mui/material';
-import { AuthGoogleProvider } from './contexts/GoogleAuth';
-import AppRoutes from './routes/routes';
+import { CssBaseline } from "@mui/material";
+import { AuthGithubProvider } from "./contexts/GitHubAuth";
+import { AuthGoogleProvider } from "./contexts/GoogleAuth";
+import AppRoutes from "./routes/routes";
 
 function App() {
   return (
     <>
       <CssBaseline />
-      <AuthGoogleProvider>
-      <AppRoutes></AppRoutes>
-      </AuthGoogleProvider>
+      <AuthGithubProvider>
+        <AuthGoogleProvider>
+          <AppRoutes></AppRoutes>
+        </AuthGoogleProvider>
+      </AuthGithubProvider>
     </>
   );
 }
