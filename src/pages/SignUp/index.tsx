@@ -11,6 +11,33 @@ import { LinkItem, OauthMuiLink } from '../../shared/styled';
 import { signupSchema } from '../../schemas/SignUp';
 
 
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import app from '../../services/firebase';
+
+export interface IRegisterLogin {
+  email: string;
+  password: string;
+}
+
+export const EmailandPasswordAuthSignUp = (RegisterLogin:IRegisterLogin) => {
+  const {email, password } = RegisterLogin;
+
+  const auth = getAuth(app);
+  createUserWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      // Signed in
+      const user = userCredential.user;
+      // ...
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      // ..
+    });
+};
+
+
+
 
 // 👇 Infer the Schema to get TypeScript Type
 type ISignUp = TypeOf<typeof signupSchema>;
@@ -33,9 +60,13 @@ const SignupPage: FC = () => {
   // 👇 Form Handler
   const onSubmitHandler: SubmitHandler<ISignUp> = (values: ISignUp) => {
     console.log(JSON.stringify(values, null, 4));
+    const password = values.password
+    const email = values.email
+    EmailandPasswordAuthSignUp({email,password})
+    
   };
 
-  // 👇 Returned JSX
+  // 👇 Returned JSX  
   return (
     <Container
       maxWidth={false}

@@ -17,19 +17,6 @@ export const AuthGithubProvider = (props: Props) => {
 
   const { children } = props;
 
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const checkAuth = () => {
-      const sessionToken = localStorage.getItem("@AuthFireBase:token");
-      const sessionUser: any = localStorage.getItem("@AuthFireBase:user");
-      if (sessionToken && sessionUser) {
-        setUser(sessionUser);
-        navigate("/home");
-      }
-    };
-    checkAuth();
-  }, []);
 
   const signInGithub = () => {
     signInWithPopup(auth, provider)
@@ -51,7 +38,6 @@ export const AuthGithubProvider = (props: Props) => {
         }
       })
       .catch((error) => {
-        console.log(error);
         // Handle Errors here.
         const errorCode = error.code;
         const errorMessage = error.message;

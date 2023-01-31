@@ -27,6 +27,8 @@ import {
 import styled from "styled-components";
 import { AuthGoogleContext } from "../../contexts/GoogleAuth";
 import { AuthGithubContext } from "../../contexts/GitHubAuth";
+import { IRegisterLogin } from "../SignUp";
+import { AuthEmailAndPasswordContext } from "../../contexts/EmailAndPasswordAuth";
 
 // 👇 Infer the Schema to get the TS Type
 type ILogin = TypeOf<typeof loginSchema>;
@@ -38,6 +40,7 @@ const LoginPage: FC = () => {
 
   const { signInGoogle, signedGoogle } = useContext(AuthGoogleContext);
   const { signInGithub, signedGithub } = useContext(AuthGithubContext);
+  const { signInEmail, signedEmailAndPassword } = useContext(AuthEmailAndPasswordContext);
 
   async function loginGoogle() {
     await signInGoogle();
@@ -45,7 +48,11 @@ const LoginPage: FC = () => {
   async function loginGithub() {
     await signInGithub();
   }
-  if (signedGithub || signedGoogle) {
+  const loginEmailAndPassword = async (RegisterLogin: IRegisterLogin) => {
+    const { email, password } = RegisterLogin;
+    await signInEmail(email, password);
+  }
+  if (signedGithub || signedGoogle || signedEmailAndPassword) {
     navigate("/home");
   }
 
@@ -63,7 +70,9 @@ const LoginPage: FC = () => {
 
   // 👇 Submit Handler
   const onSubmitHandler: SubmitHandler<ILogin> = (values: ILogin) => {
-    console.log(values);
+    const email = values?.email;
+    const password = values?.password;
+    loginEmailAndPassword({ email, password });
   };
 
   const LeftBoxContainer = styled.div`
@@ -112,7 +121,7 @@ const LoginPage: FC = () => {
                       required
                       focused
                     />
-
+{/* 
                     <FormControlLabel
                       control={
                         <Checkbox
@@ -125,7 +134,7 @@ const LoginPage: FC = () => {
                       label={
                         <TrustDeviceText>Trust this device</TrustDeviceText>
                       }
-                    />
+                    /> */}
 
                     <LoadingButtonMui
                       loading={false}

@@ -20,20 +20,6 @@ export const AuthGoogleProvider: React.FC<Props> = (props: Props) => {
 
   const { children } = props;
 
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const checkAuth = () => {
-      const sessionToken = localStorage.getItem("@AuthFireBase:token");
-      const sessionUser: any = localStorage.getItem("@AuthFireBase:user");
-      if (sessionToken && sessionUser) {
-        setUser(sessionUser);
-        navigate("/home");
-      }
-    };
-    checkAuth();
-  }, []);
-
   const signInGoogle = () => {
     signInWithPopup(auth, provider)
       .then((result) => {
