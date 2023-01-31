@@ -1,7 +1,8 @@
 import { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import app from "../../services/firebase";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
+import { getAuth } from "firebase/auth";
 
 export const AuthEmailAndPasswordContext = createContext<any>({});
 
@@ -10,7 +11,7 @@ interface Props {
 }
 
 export const AuthEmailAndPasswordProvider = (props: Props) => {
-  const [user, setUser] = useState(null);
+  const [userEmail, setUserEmail] = useState<any>(null);
   const auth = getAuth(app);
 
   const { children } = props;
@@ -22,38 +23,31 @@ export const AuthEmailAndPasswordProvider = (props: Props) => {
       const sessionToken = localStorage.getItem("@AuthFireBase:token");
       const sessionUser: any = localStorage.getItem("@AuthFireBase:user");
       if (sessionToken && sessionUser) {
-        setUser(sessionUser);
+        setUserEmail(sessionUser);
         navigate("/home");
       }
     };
     checkAuth();
   }, []);
 
-  const signInEmail = (email: string, password: string) => {
+  const [signInWithEmailAndPassword, user, loading, error] =
+    useSignInWithEmailAndPassword(auth);
+
+  const signInEmail = async (email: string, password: string) => {
     if (email && password) {
-      signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          // Signed in
-          const user: any = userCredential.user;
-          const token = user.accessToken;
-          if (token) {
-            localStorage.setItem("@AuthFireBase:token", token);
-          }
-
-          localStorage.setItem("@AuthFireBase:user", JSON.stringify(user));
-          setUser(user);
-        })
-
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-        });
-    }
+        const userCredential = await signInWithEmailAndPassword(email, password);
+        if (userCredential){
+          localStorage.setItem("@AuthFireBase:token", userCredential.user.refreshToken);
+          localStorage.setItem("@AuthFireBase:user", JSON.stringify(userCredential));
+          setUserEmail(userCredential)
+        }
+       
+      }
   };
 
   return (
     <AuthEmailAndPasswordContext.Provider
-      value={{ signInEmail, signedEmailAndPassword: !!user }}
+      value={{ signInEmail, signedEmailAndPassword: !!userEmail, loading }}
     >
       {children}
     </AuthEmailAndPasswordContext.Provider>

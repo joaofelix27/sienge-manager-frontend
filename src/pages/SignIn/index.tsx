@@ -34,13 +34,12 @@ import { AuthEmailAndPasswordContext } from "../../contexts/EmailAndPasswordAuth
 type ILogin = TypeOf<typeof loginSchema>;
 
 const LoginPage: FC = () => {
-  const [user, setUser] = useState(null);
 
   const navigate = useNavigate();
 
   const { signInGoogle, signedGoogle } = useContext(AuthGoogleContext);
   const { signInGithub, signedGithub } = useContext(AuthGithubContext);
-  const { signInEmail, signedEmailAndPassword } = useContext(AuthEmailAndPasswordContext);
+  const { signInEmail, signedEmailAndPassword, loading } = useContext(AuthEmailAndPasswordContext);
 
   async function loginGoogle() {
     await signInGoogle();
@@ -53,6 +52,7 @@ const LoginPage: FC = () => {
     await signInEmail(email, password);
   }
   if (signedGithub || signedGoogle || signedEmailAndPassword) {
+    console.log("teste")
     navigate("/home");
   }
 
@@ -137,7 +137,7 @@ const LoginPage: FC = () => {
                     /> */}
 
                     <LoadingButtonMui
-                      loading={false}
+                      loading={loading}
                       type="submit"
                       variant="contained"
                       sx={{
