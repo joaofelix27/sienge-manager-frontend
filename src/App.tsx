@@ -1,16 +1,20 @@
-import { CssBaseline } from '@mui/material';
-import { Route, Routes } from 'react-router-dom';
-import LoginPage from './pages/Login';
-import SignupPage from './pages/SignUp';
+import { CssBaseline } from "@mui/material";
+import { AuthEmailAndPasswordProvider } from "./contexts/EmailAndPasswordAuth";
+import { AuthGithubProvider } from "./contexts/GitHubAuth";
+import { AuthGoogleProvider } from "./contexts/GoogleAuth";
+import AppRoutes from "./routes/routes";
 
 function App() {
   return (
     <>
       <CssBaseline />
-      <Routes>
-        <Route path='/' element={<LoginPage />} />
-        <Route path='/signup' element={<SignupPage />} />
-      </Routes>
+      <AuthEmailAndPasswordProvider>
+        <AuthGithubProvider>
+          <AuthGoogleProvider>
+            <AppRoutes></AppRoutes>
+          </AuthGoogleProvider>
+        </AuthGithubProvider>
+      </AuthEmailAndPasswordProvider>
     </>
   );
 }

@@ -1,5 +1,13 @@
-import { Container, Grid, Box, Typography, Stack } from "@mui/material";
-import LoadingButton from "@mui/lab/LoadingButton";
+import {
+  Container,
+  Grid,
+  Box,
+  Typography,
+  Stack,
+  Link as MuiLink,
+  FormControlLabel,
+  Checkbox,
+} from "@mui/material";
 import { FC } from "react";
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import { TypeOf } from "zod";
@@ -8,55 +16,34 @@ import FormInput from "../../components/FormInput";
 import { ReactComponent as GoogleLogo } from "../../assets/google.svg";
 import { ReactComponent as GitHubLogo } from "../../assets/github.svg";
 import { LinkItem, OauthMuiLink } from "../../shared/styled";
-import { signupSchema } from "../../schemas/SignUp";
+import LoadingButtonMui from "../../components/LoadingButtom";
+import { loginSchema } from "../../schemas/SignIn";
+import styled from "styled-components";
 
-import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
-import app from "../../services/firebase";
-import { getAuth } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
+// 👇 Infer the Schema to get the TS Type
+type ILogin = TypeOf<typeof loginSchema>;
 
-export interface IRegisterLogin {
-  email: string;
-  password: string;
-}
-
-// 👇 Infer the Schema to get TypeScript Type
-type ISignUp = TypeOf<typeof signupSchema>;
-
-const SignupPage: FC = () => {
+const LoginPage: FC = () => {
   // 👇 Default Values
-  const defaultValues: ISignUp = {
-    name: "",
+  const defaultValues: ILogin = {
     email: "",
     password: "",
-    passwordConfirm: "",
   };
 
-  const auth = getAuth(app);
-  const [createUserWithEmailAndPassword, user, loading, error] =
-    useCreateUserWithEmailAndPassword(auth);
-
-  const navigate = useNavigate();
-
-  if (user) {
-    navigate("/");
-  }
-
-  // 👇 Object containing all the methods returned by useForm
-  const methods = useForm<ISignUp>({
-    resolver: zodResolver(signupSchema),
+  // 👇 The object returned from useForm Hook
+  const methods = useForm<ILogin>({
+    resolver: zodResolver(loginSchema),
     defaultValues,
   });
 
-  // 👇 Form Handler
-  const onSubmitHandler: SubmitHandler<ISignUp> = (values: ISignUp) => {
-    console.log(JSON.stringify(values, null, 4));
-    const password = values.password;
-    const email = values.email;
-    createUserWithEmailAndPassword(email, password);
+  // 👇 Submit Handler
+  const onSubmitHandler: SubmitHandler<ILogin> = (values: ILogin) => {
+    console.log(values);
   };
 
-  // 👇 Returned JSX
+
+
+  // 👇 JSX to be rendered
   return (
     <Container
       maxWidth={false}
@@ -72,27 +59,15 @@ const SignupPage: FC = () => {
           item
           sx={{ maxWidth: "70rem", width: "100%", backgroundColor: "#fff" }}
         >
-          <Grid
-            container
-            sx={{
-              boxShadow: { sm: "0 0 5px #ddd" },
-              py: "6rem",
-              px: "1rem",
-            }}
-          >
-            <FormProvider {...methods}>
-              <Typography
-                variant="h4"
-                component="h1"
-                sx={{
-                  textAlign: "center",
-                  width: "100%",
-                  mb: "1.5rem",
-                  pb: { sm: "3rem" },
-                }}
-              >
-                Welcome To Loop True!
-              </Typography>
+          <FormProvider {...methods}>
+            <Grid
+              container
+              sx={{
+                boxShadow: { sm: "0 0 5px #ddd" },
+                py: "6rem",
+                px: "1rem",
+              }}
+            >
               <Grid
                 item
                 container
@@ -123,16 +98,9 @@ const SignupPage: FC = () => {
                       component="h1"
                       sx={{ textAlign: "center", mb: "1.5rem" }}
                     >
-                      Create new your account
+                      Log into your account
                     </Typography>
 
-                    <FormInput
-                      label="Name"
-                      type="text"
-                      name="name"
-                      focused
-                      required
-                    />
                     <FormInput
                       label="Enter your email"
                       type="email"
@@ -147,16 +115,32 @@ const SignupPage: FC = () => {
                       required
                       focused
                     />
-                    <FormInput
-                      type="password"
-                      label="Confirm Password"
-                      name="passwordConfirm"
-                      required
-                      focused
+
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          size="small"
+                          aria-label="trust this device checkbox"
+                          required
+                          {...methods.register("persistUser")}
+                        />
+                      }
+                      label={
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            fontSize: "0.8rem",
+                            fontWeight: 400,
+                            color: "#5e5b5d",
+                          }}
+                        >
+                          Trust this device
+                        </Typography>
+                      }
                     />
 
-                    <LoadingButton
-                      loading={loading}
+                    <LoadingButtonMui
+                      loading={false}
                       type="submit"
                       variant="contained"
                       sx={{
@@ -166,11 +150,11 @@ const SignupPage: FC = () => {
                         marginInline: "auto",
                       }}
                     >
-                      Sign Up
-                    </LoadingButton>
+                      Login
+                    </LoadingButtonMui>
                   </Box>
                 </Grid>
-                <Grid item xs={12} sm={6} sx={{}}>
+                <Grid item xs={12} sm={6}>
                   <Typography
                     variant="h6"
                     component="p"
@@ -180,7 +164,7 @@ const SignupPage: FC = () => {
                       textAlign: "center",
                     }}
                   >
-                    Sign up using another provider:
+                    Log in with another provider:
                   </Typography>
                   <Box
                     display="flex"
@@ -201,16 +185,21 @@ const SignupPage: FC = () => {
               <Grid container justifyContent="center">
                 <Stack sx={{ mt: "3rem", textAlign: "center" }}>
                   <Typography sx={{ fontSize: "0.9rem", mb: "1rem" }}>
-                    Already have an account? <LinkItem to="/">Login</LinkItem>
+                    Need an account?{" "}
+                    <LinkItem to="/signup">Sign up here</LinkItem>
+                  </Typography>
+                  <Typography sx={{ fontSize: "0.9rem" }}>
+                    Forgot your{" "}
+                    <LinkItem to="/forgotPassword">password?</LinkItem>
                   </Typography>
                 </Stack>
               </Grid>
-            </FormProvider>
-          </Grid>
+            </Grid>
+          </FormProvider>
         </Grid>
       </Grid>
     </Container>
   );
 };
 
-export default SignupPage;
+export default LoginPage;
