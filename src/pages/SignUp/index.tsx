@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import FormInput from "../../components/FormInput";
 import { ReactComponent as GoogleLogo } from "../../assets/google.svg";
 import { ReactComponent as GitHubLogo } from "../../assets/github.svg";
+import { ReactComponent as FacebookLogo } from "../../assets/facebook.svg";
 import { LinkItem, OauthMuiLink } from "../../shared/styled";
 import { signupSchema } from "../../schemas/SignUp";
 
@@ -14,8 +15,7 @@ import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
 import app from "../../services/firebase";
 import { getAuth } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import { AuthGoogleContext} from "../../contexts/GoogleAuth";
-import { AuthGithubContext } from "../../contexts/GitHubAuth";
+import { AuthProvidersContext } from "../../contexts/ProvidersAuth";
 
 export interface IRegisterLogin {
   email: string;
@@ -43,18 +43,14 @@ const SignupPage: FC = () => {
   if (user) {
     navigate("/");
   }
-  const { signInGoogle, signedGoogle } = useContext(AuthGoogleContext);
-  const { signInGithub, signedGithub } = useContext(AuthGithubContext);
+  const { signInProvider, signed } = useContext(AuthProvidersContext);
 
-  if (signedGithub || signedGoogle) {
+  if (signed) {
     navigate("/home");
   }
 
-  async function loginGoogle() {
-    await signInGoogle();
-  }
-  async function loginGithub() {
-    await signInGithub();
+  async function loginProvider(provider: string) {
+    await signInProvider(provider);
   }
 
   // 👇 Object containing all the methods returned by useForm
@@ -202,13 +198,17 @@ const SignupPage: FC = () => {
                     flexDirection="column"
                     sx={{ paddingLeft: { sm: "3rem" }, rowGap: "1rem" }}
                   >
-                    <OauthMuiLink onClick={() => loginGoogle()}>
+                    <OauthMuiLink onClick={() => loginProvider("Google")}>
                       <GoogleLogo style={{ height: "2rem" }} />
                       Google
                     </OauthMuiLink>
-                    <OauthMuiLink onClick={() => loginGithub()}>
+                    <OauthMuiLink onClick={() => loginProvider("Github")}>
                       <GitHubLogo style={{ height: "2rem" }} />
                       GitHub
+                    </OauthMuiLink>
+                    <OauthMuiLink onClick={() => loginProvider("Facebook")}>
+                      <FacebookLogo style={{ height: "2rem" }} />
+                      Facebook
                     </OauthMuiLink>
                   </Box>
                 </Grid>

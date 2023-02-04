@@ -26,38 +26,29 @@ import {
   TrustDeviceText,
 } from "./style";
 import styled from "styled-components";
-import { AuthGoogleContext } from "../../contexts/GoogleAuth";
-import { AuthGithubContext } from "../../contexts/GitHubAuth";
 import { IRegisterLogin } from "../SignUp";
 import { AuthEmailAndPasswordContext } from "../../contexts/EmailAndPasswordAuth";
-import { AuthFacebookContext } from "../../contexts/FacebookAuth";
+import { AuthProvidersContext } from "../../contexts/ProvidersAuth";
 
 // 👇 Infer the Schema to get the TS Type
 type ILogin = TypeOf<typeof loginSchema>;
 
 const LoginPage: FC = () => {
-
   const navigate = useNavigate();
 
-  const { signInGoogle, signedGoogle } = useContext(AuthGoogleContext);
-  const { signInGithub, signedGithub } = useContext(AuthGithubContext);
-  const { signInFacebook, signedFacebook } = useContext(AuthFacebookContext);
-  const { signInEmail, signedEmailAndPassword, loading } = useContext(AuthEmailAndPasswordContext);
+  const { signInProvider, signed } = useContext(AuthProvidersContext);
+  const { signInEmail, signedEmailAndPassword, loading } = useContext(
+    AuthEmailAndPasswordContext
+  );
 
-  async function loginGoogle() {
-    await signInGoogle();
-  }
-  async function loginGithub() {
-    await signInGithub();
-  }
-  async function loginFacebook() {
-    await signInFacebook();
+  async function loginProvider(provider: string) {
+    await signInProvider(provider);
   }
   const loginEmailAndPassword = async (RegisterLogin: IRegisterLogin) => {
     const { email, password } = RegisterLogin;
     await signInEmail(email, password);
-  }
-  if (signedGithub || signedGoogle || signedEmailAndPassword || signedFacebook) {
+  };
+  if (signed || signedEmailAndPassword) {
     navigate("/home");
   }
 
@@ -126,7 +117,7 @@ const LoginPage: FC = () => {
                       required
                       focused
                     />
-{/* 
+                    {/* 
                     <FormControlLabel
                       control={
                         <Checkbox
@@ -159,15 +150,15 @@ const LoginPage: FC = () => {
                 <RightBoxContainer>
                   <LoginText>Log in with another provider:</LoginText>
                   <RightBox>
-                    <OauthMuiLink onClick={() => loginGoogle()}>
+                    <OauthMuiLink onClick={() => loginProvider("Google")}>
                       <GoogleLogo style={{ height: "2rem" }} />
                       Google
                     </OauthMuiLink>
-                    <OauthMuiLink onClick={() => loginGithub()}>
+                    <OauthMuiLink onClick={() => loginProvider("Github")}>
                       <GitHubLogo style={{ height: "2rem" }} />
                       GitHub
                     </OauthMuiLink>
-                    <OauthMuiLink onClick={() => loginFacebook()}>
+                    <OauthMuiLink onClick={() => loginProvider("Facebook")}>
                       <FacebookLogo style={{ height: "2rem" }} />
                       Facebook
                     </OauthMuiLink>
