@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import FormInput from "../../components/FormInput";
 import { ReactComponent as GoogleLogo } from "../../assets/google.svg";
 import { ReactComponent as GitHubLogo } from "../../assets/github.svg";
+import { ReactComponent as FacebookLogo } from "../../assets/facebook.svg";
 import { LinkItem, OauthMuiLink } from "../../shared/styled";
 import LoadingButtonMui from "../../components/LoadingButtom";
 import { loginSchema } from "../../schemas/SignIn";
@@ -29,6 +30,7 @@ import { AuthGoogleContext } from "../../contexts/GoogleAuth";
 import { AuthGithubContext } from "../../contexts/GitHubAuth";
 import { IRegisterLogin } from "../SignUp";
 import { AuthEmailAndPasswordContext } from "../../contexts/EmailAndPasswordAuth";
+import { AuthFacebookContext } from "../../contexts/FacebookAuth";
 
 // 👇 Infer the Schema to get the TS Type
 type ILogin = TypeOf<typeof loginSchema>;
@@ -39,6 +41,7 @@ const LoginPage: FC = () => {
 
   const { signInGoogle, signedGoogle } = useContext(AuthGoogleContext);
   const { signInGithub, signedGithub } = useContext(AuthGithubContext);
+  const { signInFacebook, signedFacebook } = useContext(AuthFacebookContext);
   const { signInEmail, signedEmailAndPassword, loading } = useContext(AuthEmailAndPasswordContext);
 
   async function loginGoogle() {
@@ -47,12 +50,14 @@ const LoginPage: FC = () => {
   async function loginGithub() {
     await signInGithub();
   }
+  async function loginFacebook() {
+    await signInFacebook();
+  }
   const loginEmailAndPassword = async (RegisterLogin: IRegisterLogin) => {
     const { email, password } = RegisterLogin;
     await signInEmail(email, password);
   }
-  if (signedGithub || signedGoogle || signedEmailAndPassword) {
-    console.log("teste")
+  if (signedGithub || signedGoogle || signedEmailAndPassword || signedFacebook) {
     navigate("/home");
   }
 
@@ -161,6 +166,10 @@ const LoginPage: FC = () => {
                     <OauthMuiLink onClick={() => loginGithub()}>
                       <GitHubLogo style={{ height: "2rem" }} />
                       GitHub
+                    </OauthMuiLink>
+                    <OauthMuiLink onClick={() => loginFacebook()}>
+                      <FacebookLogo style={{ height: "2rem" }} />
+                      Facebook
                     </OauthMuiLink>
                   </RightBox>
                 </RightBoxContainer>

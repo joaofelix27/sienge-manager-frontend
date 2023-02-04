@@ -1,6 +1,6 @@
 import { Container, Grid, Box, Typography, Stack } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
-import { FC } from "react";
+import { FC, useContext } from "react";
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import { TypeOf } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,6 +14,8 @@ import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
 import app from "../../services/firebase";
 import { getAuth } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import { AuthGoogleContext} from "../../contexts/GoogleAuth";
+import { AuthGithubContext } from "../../contexts/GitHubAuth";
 
 export interface IRegisterLogin {
   email: string;
@@ -40,6 +42,19 @@ const SignupPage: FC = () => {
 
   if (user) {
     navigate("/");
+  }
+  const { signInGoogle, signedGoogle } = useContext(AuthGoogleContext);
+  const { signInGithub, signedGithub } = useContext(AuthGithubContext);
+
+  if (signedGithub || signedGoogle) {
+    navigate("/home");
+  }
+
+  async function loginGoogle() {
+    await signInGoogle();
+  }
+  async function loginGithub() {
+    await signInGithub();
   }
 
   // 👇 Object containing all the methods returned by useForm
@@ -187,11 +202,11 @@ const SignupPage: FC = () => {
                     flexDirection="column"
                     sx={{ paddingLeft: { sm: "3rem" }, rowGap: "1rem" }}
                   >
-                    <OauthMuiLink href="">
+                    <OauthMuiLink onClick={() => loginGoogle()}>
                       <GoogleLogo style={{ height: "2rem" }} />
                       Google
                     </OauthMuiLink>
-                    <OauthMuiLink href="">
+                    <OauthMuiLink onClick={() => loginGithub()}>
                       <GitHubLogo style={{ height: "2rem" }} />
                       GitHub
                     </OauthMuiLink>
