@@ -18,9 +18,9 @@ import {
   LinkText,
   LoginBorder,
   LoginCard,
-  LoginGrid,
+  OutsideGrid,
   LoginInsideGrid,
-  LoginOutsideContainer,
+  OutsideContainer,
   LoginText,
   RightBox,
   TrustDeviceText,
@@ -89,8 +89,8 @@ const LoginPage: FC = () => {
 
   // 👇 JSX to be rendered
   return (
-    <LoginOutsideContainer>
-      <LoginGrid>
+    <OutsideContainer>
+      <OutsideGrid>
         <LoginCard>
           <FormProvider {...methods}>
             <LoginBorder>
@@ -178,8 +178,8 @@ const LoginPage: FC = () => {
             </LoginBorder>
           </FormProvider>
         </LoginCard>
-      </LoginGrid>
-    </LoginOutsideContainer>
+      </OutsideGrid>
+    </OutsideContainer>
   );
 };
 
