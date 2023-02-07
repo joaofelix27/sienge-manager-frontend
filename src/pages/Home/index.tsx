@@ -10,6 +10,8 @@ import {
 } from "@mui/material";
 import { SubmitHandler, useForm } from "react-hook-form";
 import LoadingButtonMui from "../../components/LoadingButtom";
+import PrimarySearchAppBar from "../../components/Menubar";
+import MenubarAlternative from "../../components/MenubarAlternative";
 import { OutsideContainer, OutsideGrid } from "../SignIn/style";
 import { InsideContainer } from "./style";
 
@@ -33,27 +35,26 @@ export default function Home() {
     formState: { errors },
   } = useForm<IFormInput>();
 
-  const URL = "http://localhost:5000/"
+  const URL = "http://localhost:5000/abacate";
 
   const formSubmitHandler: SubmitHandler<IFormInput> = (data: IFormInput) => {
-
     const requestOptions = {
-      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+      body: JSON.stringify(data),
     };
-    
-    fetch(
-      URL,
-      requestOptions
-    ).then(response => response.json())
-    .then(json => console.log(json));;
-    console.log(data);
-    console.log(errors);
+
+    fetch(URL, requestOptions)
+      .then((response) => response.json())
+      .then((json) => console.log(json));
   };
   return (
     <OutsideContainer>
+      <MenubarAlternative></MenubarAlternative>
       <OutsideGrid>
         <InsideContainer>
-          <Paper elevation={20}>
             <form onSubmit={handleSubmit(formSubmitHandler)}>
               <FormGroup>
                 <FormControl margin="normal">
@@ -145,11 +146,10 @@ export default function Home() {
                   }}
                 >
                   {" "}
-                  Abacate
+                  Lançar Nota
                 </LoadingButtonMui>
               </FormGroup>
             </form>
-          </Paper>
         </InsideContainer>
       </OutsideGrid>
     </OutsideContainer>

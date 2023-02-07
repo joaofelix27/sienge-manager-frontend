@@ -92,18 +92,6 @@ const SignupPage: FC = () => {
             }}
           >
             <FormProvider {...methods}>
-              <Typography
-                variant="h4"
-                component="h1"
-                sx={{
-                  textAlign: "center",
-                  width: "100%",
-                  mb: "1.5rem",
-                  pb: { sm: "3rem" },
-                }}
-              >
-                Welcome To Loop True!
-              </Typography>
               <Grid
                 item
                 container
