@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import FormInput from "../../components/FormInput";
 import { ReactComponent as GoogleLogo } from "../../assets/google.svg";
 import { ReactComponent as GitHubLogo } from "../../assets/github.svg";
+import { ReactComponent as FacebookLogo } from "../../assets/facebook.svg";
 import { LinkItem, OauthMuiLink } from "../../shared/styled";
 import LoadingButtonMui from "../../components/LoadingButtom";
 import { loginSchema } from "../../schemas/SignIn";
@@ -17,42 +18,37 @@ import {
   LinkText,
   LoginBorder,
   LoginCard,
-  LoginGrid,
+  OutsideGrid,
   LoginInsideGrid,
-  LoginOutsideContainer,
+  OutsideContainer,
   LoginText,
   RightBox,
   TrustDeviceText,
 } from "./style";
 import styled from "styled-components";
-import { AuthGoogleContext } from "../../contexts/GoogleAuth";
-import { AuthGithubContext } from "../../contexts/GitHubAuth";
 import { IRegisterLogin } from "../SignUp";
 import { AuthEmailAndPasswordContext } from "../../contexts/EmailAndPasswordAuth";
+import { AuthProvidersContext } from "../../contexts/ProvidersAuth";
 
 // 👇 Infer the Schema to get the TS Type
 type ILogin = TypeOf<typeof loginSchema>;
 
 const LoginPage: FC = () => {
-
   const navigate = useNavigate();
 
-  const { signInGoogle, signedGoogle } = useContext(AuthGoogleContext);
-  const { signInGithub, signedGithub } = useContext(AuthGithubContext);
-  const { signInEmail, signedEmailAndPassword, loading } = useContext(AuthEmailAndPasswordContext);
+  const { signInProvider, signed } = useContext(AuthProvidersContext);
+  const { signInEmail, signedEmailAndPassword, loading } = useContext(
+    AuthEmailAndPasswordContext
+  );
 
-  async function loginGoogle() {
-    await signInGoogle();
-  }
-  async function loginGithub() {
-    await signInGithub();
+  async function loginProvider(provider: string) {
+    await signInProvider(provider);
   }
   const loginEmailAndPassword = async (RegisterLogin: IRegisterLogin) => {
     const { email, password } = RegisterLogin;
     await signInEmail(email, password);
-  }
-  if (signedGithub || signedGoogle || signedEmailAndPassword) {
-    console.log("teste")
+  };
+  if (signed || signedEmailAndPassword) {
     navigate("/home");
   }
 
@@ -93,8 +89,8 @@ const LoginPage: FC = () => {
 
   // 👇 JSX to be rendered
   return (
-    <LoginOutsideContainer>
-      <LoginGrid>
+    <OutsideContainer>
+      <OutsideGrid>
         <LoginCard>
           <FormProvider {...methods}>
             <LoginBorder>
@@ -121,7 +117,7 @@ const LoginPage: FC = () => {
                       required
                       focused
                     />
-{/* 
+                    {/* 
                     <FormControlLabel
                       control={
                         <Checkbox
@@ -154,13 +150,17 @@ const LoginPage: FC = () => {
                 <RightBoxContainer>
                   <LoginText>Log in with another provider:</LoginText>
                   <RightBox>
-                    <OauthMuiLink onClick={() => loginGoogle()}>
+                    <OauthMuiLink onClick={() => loginProvider("Google")}>
                       <GoogleLogo style={{ height: "2rem" }} />
                       Google
                     </OauthMuiLink>
-                    <OauthMuiLink onClick={() => loginGithub()}>
+                    <OauthMuiLink onClick={() => loginProvider("Github")}>
                       <GitHubLogo style={{ height: "2rem" }} />
                       GitHub
+                    </OauthMuiLink>
+                    <OauthMuiLink onClick={() => loginProvider("Facebook")}>
+                      <FacebookLogo style={{ height: "2rem" }} />
+                      Facebook
                     </OauthMuiLink>
                   </RightBox>
                 </RightBoxContainer>
@@ -178,8 +178,8 @@ const LoginPage: FC = () => {
             </LoginBorder>
           </FormProvider>
         </LoginCard>
-      </LoginGrid>
-    </LoginOutsideContainer>
+      </OutsideGrid>
+    </OutsideContainer>
   );
 };
 

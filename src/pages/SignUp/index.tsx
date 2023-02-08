@@ -1,12 +1,13 @@
 import { Container, Grid, Box, Typography, Stack } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
-import { FC } from "react";
+import { FC, useContext } from "react";
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import { TypeOf } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import FormInput from "../../components/FormInput";
 import { ReactComponent as GoogleLogo } from "../../assets/google.svg";
 import { ReactComponent as GitHubLogo } from "../../assets/github.svg";
+import { ReactComponent as FacebookLogo } from "../../assets/facebook.svg";
 import { LinkItem, OauthMuiLink } from "../../shared/styled";
 import { signupSchema } from "../../schemas/SignUp";
 
@@ -14,6 +15,7 @@ import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
 import app from "../../services/firebase";
 import { getAuth } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import { AuthProvidersContext } from "../../contexts/ProvidersAuth";
 
 export interface IRegisterLogin {
   email: string;
@@ -40,6 +42,15 @@ const SignupPage: FC = () => {
 
   if (user) {
     navigate("/");
+  }
+  const { signInProvider, signed } = useContext(AuthProvidersContext);
+
+  if (signed) {
+    navigate("/home");
+  }
+
+  async function loginProvider(provider: string) {
+    await signInProvider(provider);
   }
 
   // 👇 Object containing all the methods returned by useForm
@@ -81,18 +92,6 @@ const SignupPage: FC = () => {
             }}
           >
             <FormProvider {...methods}>
-              <Typography
-                variant="h4"
-                component="h1"
-                sx={{
-                  textAlign: "center",
-                  width: "100%",
-                  mb: "1.5rem",
-                  pb: { sm: "3rem" },
-                }}
-              >
-                Welcome To Loop True!
-              </Typography>
               <Grid
                 item
                 container
@@ -187,13 +186,17 @@ const SignupPage: FC = () => {
                     flexDirection="column"
                     sx={{ paddingLeft: { sm: "3rem" }, rowGap: "1rem" }}
                   >
-                    <OauthMuiLink href="">
+                    <OauthMuiLink onClick={() => loginProvider("Google")}>
                       <GoogleLogo style={{ height: "2rem" }} />
                       Google
                     </OauthMuiLink>
-                    <OauthMuiLink href="">
+                    <OauthMuiLink onClick={() => loginProvider("Github")}>
                       <GitHubLogo style={{ height: "2rem" }} />
                       GitHub
+                    </OauthMuiLink>
+                    <OauthMuiLink onClick={() => loginProvider("Facebook")}>
+                      <FacebookLogo style={{ height: "2rem" }} />
+                      Facebook
                     </OauthMuiLink>
                   </Box>
                 </Grid>
