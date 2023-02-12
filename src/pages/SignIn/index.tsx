@@ -18,9 +18,7 @@ import {
   LinkText,
   LoginBorder,
   LoginCard,
-  OutsideGrid,
   LoginInsideGrid,
-  OutsideContainer,
   LoginText,
   RightBox,
   TrustDeviceText,
@@ -29,6 +27,7 @@ import styled from "styled-components";
 import { IRegisterLogin } from "../SignUp";
 import { AuthEmailAndPasswordContext } from "../../contexts/EmailAndPasswordAuth";
 import { AuthProvidersContext } from "../../contexts/ProvidersAuth";
+import Container from "../../components/OutsideContainer";
 
 // 👇 Infer the Schema to get the TS Type
 type ILogin = TypeOf<typeof loginSchema>;
@@ -89,35 +88,34 @@ const LoginPage: FC = () => {
 
   // 👇 JSX to be rendered
   return (
-    <OutsideContainer>
-      <OutsideGrid>
-        <LoginCard>
-          <FormProvider {...methods}>
-            <LoginBorder>
-              <LoginInsideGrid>
-                <LeftBoxContainer>
-                  <LeftBox
-                    noValidate
-                    autoComplete="off"
-                    onSubmit={methods.handleSubmit(onSubmitHandler)}
-                  >
-                    <LoginText>Log into your account</LoginText>
+    <Container withoutHeader={true}>
+      <LoginCard>
+        <FormProvider {...methods}>
+          <LoginBorder>
+            <LoginInsideGrid>
+              <LeftBoxContainer>
+                <LeftBox
+                  noValidate
+                  autoComplete="off"
+                  onSubmit={methods.handleSubmit(onSubmitHandler)}
+                >
+                  <LoginText>Log into your account</LoginText>
 
-                    <FormInput
-                      label="Enter your email"
-                      type="email"
-                      name="email"
-                      focused
-                      required
-                    />
-                    <FormInput
-                      type="password"
-                      label="Password"
-                      name="password"
-                      required
-                      focused
-                    />
-                    {/* 
+                  <FormInput
+                    label="Enter your email"
+                    type="email"
+                    name="email"
+                    focused
+                    required
+                  />
+                  <FormInput
+                    type="password"
+                    label="Password"
+                    name="password"
+                    required
+                    focused
+                  />
+                  {/* 
                     <FormControlLabel
                       control={
                         <Checkbox
@@ -132,54 +130,51 @@ const LoginPage: FC = () => {
                       }
                     /> */}
 
-                    <LoadingButtonMui
-                      loading={loading}
-                      type="submit"
-                      variant="contained"
-                      sx={{
-                        py: "0.8rem",
-                        mt: 2,
-                        width: "80%",
-                        marginInline: "auto",
-                      }}
-                    >
-                      Login
-                    </LoadingButtonMui>
-                  </LeftBox>
-                </LeftBoxContainer>
-                <RightBoxContainer>
-                  <LoginText>Log in with another provider:</LoginText>
-                  <RightBox>
-                    <OauthMuiLink onClick={() => loginProvider("Google")}>
-                      <GoogleLogo style={{ height: "2rem" }} />
-                      Google
-                    </OauthMuiLink>
-                    <OauthMuiLink onClick={() => loginProvider("Github")}>
-                      <GitHubLogo style={{ height: "2rem" }} />
-                      GitHub
-                    </OauthMuiLink>
-                    <OauthMuiLink onClick={() => loginProvider("Facebook")}>
-                      <FacebookLogo style={{ height: "2rem" }} />
-                      Facebook
-                    </OauthMuiLink>
-                  </RightBox>
-                </RightBoxContainer>
-              </LoginInsideGrid>
-              <BottomLoginContainer>
-                <LinkText margin="1rem">
-                  Need an account?{" "}
-                  <LinkItem to="/signup">Sign up here</LinkItem>
-                </LinkText>
-                <LinkText>
-                  Forgot your{" "}
-                  <LinkItem to="/forgotPassword">password?</LinkItem>
-                </LinkText>
-              </BottomLoginContainer>
-            </LoginBorder>
-          </FormProvider>
-        </LoginCard>
-      </OutsideGrid>
-    </OutsideContainer>
+                  <LoadingButtonMui
+                    loading={loading}
+                    type="submit"
+                    variant="contained"
+                    sx={{
+                      py: "0.8rem",
+                      mt: 2,
+                      width: "80%",
+                      marginInline: "auto",
+                    }}
+                  >
+                    Login
+                  </LoadingButtonMui>
+                </LeftBox>
+              </LeftBoxContainer>
+              <RightBoxContainer>
+                <LoginText>Log in with another provider:</LoginText>
+                <RightBox>
+                  <OauthMuiLink onClick={() => loginProvider("Google")}>
+                    <GoogleLogo style={{ height: "2rem" }} />
+                    Google
+                  </OauthMuiLink>
+                  <OauthMuiLink onClick={() => loginProvider("Github")}>
+                    <GitHubLogo style={{ height: "2rem" }} />
+                    GitHub
+                  </OauthMuiLink>
+                  <OauthMuiLink onClick={() => loginProvider("Facebook")}>
+                    <FacebookLogo style={{ height: "2rem" }} />
+                    Facebook
+                  </OauthMuiLink>
+                </RightBox>
+              </RightBoxContainer>
+            </LoginInsideGrid>
+            <BottomLoginContainer>
+              <LinkText margin="1rem">
+                Need an account? <LinkItem to="/signup">Sign up here</LinkItem>
+              </LinkText>
+              <LinkText>
+                Forgot your <LinkItem to="/forgotPassword">password?</LinkItem>
+              </LinkText>
+            </BottomLoginContainer>
+          </LoginBorder>
+        </FormProvider>
+      </LoginCard>
+    </Container>
   );
 };
 
