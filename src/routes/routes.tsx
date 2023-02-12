@@ -1,7 +1,8 @@
 import { CssBaseline } from "@mui/material";
 import { Route, Routes } from "react-router-dom";
 import PrivateRoutes from ".";
-import Home from "../pages/Home";
+import InvoiceForms from "../components/Forms/Invoices";
+import { Indicators } from "../pages/DashBoards/Indicators";
 import LoginPage from "../pages/SignIn";
 import SignupPage from "../pages/SignUp";
 
@@ -12,9 +13,10 @@ function AppRoutes() {
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
-        <Route path="/home" element={<PrivateRoutes/>}>
-           <Route path="/home" element={<Home />} />
+        <Route path="/home" element={<PrivateRoutes />}>
+          <Route path="/home" element={<InvoiceForms />} />
         </Route>
+        <Route path="/dashboards/indicators" element={<Indicators />} />
       </Routes>
     </>
   );

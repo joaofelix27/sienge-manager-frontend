@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
-export const InsideContainer = styled.div`
+
+export const InsideContainerStyle = styled.div`
   max-width: 50rem;
   width: 100%;
   background-color: #fff;
