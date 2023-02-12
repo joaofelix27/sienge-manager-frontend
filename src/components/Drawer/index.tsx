@@ -10,7 +10,7 @@ import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import { useState } from "react";
 
 interface Props {
-  links: JSX.Element[];
+  links: JSX.Element[] | string[];
 }
 
 export default function DrawerComp(props: Props) {

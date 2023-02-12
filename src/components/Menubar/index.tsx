@@ -1,9 +1,12 @@
+import { ArrowDropDown } from "@mui/icons-material";
 import {
   AppBar,
   Box,
   Button,
   Grid,
   IconButton,
+  Menu,
+  MenuItem,
   Tab,
   Tabs,
   Toolbar,
@@ -11,12 +14,15 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { useState } from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { LinkItem } from "../../shared/styled";
 import DrawerComp from "../Drawer";
 
 export default function MenubarAlternative() {
   const [chosenTab, SetChosenTab] = useState(null);
+
+  const navigate = useNavigate()
 
   const theme = useTheme();
 
@@ -27,6 +33,51 @@ export default function MenubarAlternative() {
     <LinkItem to="/signup">Sienge</LinkItem>,
     <LinkItem to="/signup">Contato</LinkItem>,
   ];
+  const [anchorEl, setAnchorEl] = React.useState<any>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (
+    index: number,
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    setAnchorEl({ [index]: event.currentTarget });
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  type TMenuItems = {
+    Dashboards: string[],
+    Sienge: string[]
+  }
+
+  const menuItems = {
+    Dashboards: [
+      {
+        title: "Comercial/Marketing",
+        path: "/dashboards/comercial",
+        cName: "dropdown-link",
+      },
+      {
+        title: "Indicadores de Segurança",
+        path: "/dashboards/indicadores",
+        cName: "dropdown-link",
+      },
+    ],
+    Sienge: [
+      {
+        title: "Notas Fiscais",
+        path: "/invoices",
+        cName: "dropdown-link",
+      },
+      {
+        title: "Títulos",
+        path: "/titles",
+        cName: "dropdown-link",
+      },
+    ],
+  };
+
   return (
     <>
       <AppBar
@@ -46,16 +97,43 @@ export default function MenubarAlternative() {
               </Grid>
             ) : (
               <Grid xs={5} display="flex" sx={{ mr: "auto" }}>
-                <Tabs
-                  textColor="inherit"
-                  indicatorColor="secondary"
-                  value={chosenTab}
-                  onChange={(e, tabValue) => SetChosenTab(tabValue)}
-                >
-                  {links.map((value) => {
-                    return <Tab label={value} />;
-                  })}
-                </Tabs>
+                {Object.keys(menuItems).map((item, index) => (
+                  <>
+                    <Button
+                      color="inherit"
+                      onClick={(e) => handleClick(index, e)}
+                    >
+                      {item} <ArrowDropDown></ArrowDropDown>
+                    </Button>
+                    <Menu
+                      anchorEl={anchorEl && anchorEl[index]}
+                      keepMounted
+                      open={anchorEl && Boolean(anchorEl[index])}
+                      onClose={handleClose}
+                      anchorOrigin={{
+                        vertical: "bottom",
+                        horizontal: "center",
+                      }}
+                      transformOrigin={{
+                        vertical: "top",
+                        horizontal: "center",
+                      }}
+                    >
+                      {menuItems[item as keyof TMenuItems].map((menuitems, menuindex) => (
+                        <MenuItem
+                          key={menuindex}
+                          onClick={() => {
+                            handleClose()
+                            navigate(menuitems.path)
+                          }
+                          }
+                        >
+                          {menuitems.title}
+                        </MenuItem>
+                      ))}
+                    </Menu>
+                  </>
+                ))}
               </Grid>
             )}
 

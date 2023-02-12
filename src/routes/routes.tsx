@@ -2,6 +2,7 @@ import { CssBaseline } from "@mui/material";
 import { Route, Routes } from "react-router-dom";
 import PrivateRoutes from ".";
 import InvoiceForms from "../components/Forms/Invoices";
+import { Commercial } from "../pages/DashBoards/Commercial";
 import { Indicators } from "../pages/DashBoards/Indicators";
 import LoginPage from "../pages/SignIn";
 import SignupPage from "../pages/SignUp";
@@ -16,7 +17,9 @@ function AppRoutes() {
         <Route path="/home" element={<PrivateRoutes />}>
           <Route path="/home" element={<InvoiceForms />} />
         </Route>
-        <Route path="/dashboards/indicators" element={<Indicators />} />
+        <Route path="/dashboards/indicadores" element={<Indicators />} />
+        <Route path="/dashboards/comercial" element={<Commercial/>} />
+        <Route path="/invoices" element={<InvoiceForms />} />
       </Routes>
     </>
   );

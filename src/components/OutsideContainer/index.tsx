@@ -1,14 +1,15 @@
-import MenubarAlternative from "../Menubar";
+import Menubar from "../Menubar";
 import { OutsideContainer, OutsideGrid } from "./style";
 
 type Props = {
   children: JSX.Element;
+  withoutHeader?: boolean | undefined
 };
 
-export default function Container({ children }: Props) {
+export default function Container({ children, withoutHeader }: Props) {
   return (
     <OutsideContainer>
-      <MenubarAlternative></MenubarAlternative>
+      {!withoutHeader && <Menubar/> }
       <OutsideGrid>{children}</OutsideGrid>
     </OutsideContainer>
   );

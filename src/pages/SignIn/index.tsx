@@ -88,7 +88,7 @@ const LoginPage: FC = () => {
 
   // 👇 JSX to be rendered
   return (
-    <Container>
+    <Container withoutHeader={true}>
       <LoginCard>
         <FormProvider {...methods}>
           <LoginBorder>
